@@ -50,6 +50,24 @@ npx expo start
 - iOS Simulator needs a Mac. On Windows, test iOS with Expo Go on a real iPhone, or an EAS build.
 - Sign in with Apple needs a development build on iOS (`npx expo run:ios` or an EAS build).
 
+## Share it (Expo project: pavansrinivass-team/sportzicon)
+
+On Windows PowerShell, use `npx.cmd` instead of `npx` (script execution is disabled on this PC).
+
+- **Web** (live at https://sportzicon.expo.app):
+  ```
+  npx.cmd expo export --platform web
+  npx.cmd eas-cli@latest deploy --prod
+  ```
+- **Android install link** (APK for friends, built in the cloud):
+  ```
+  npx.cmd eas-cli@latest build --platform android --profile preview
+  ```
+  When it finishes, share the build page link or QR code; your friend installs it on their Android phone.
+- **App stores** (later): `--profile production` builds, then `npx.cmd eas-cli@latest submit`. Needs a Google Play developer account ($25 one-time) and an Apple Developer account ($99/year).
+
+Build-time Supabase settings live in `eas.json` (`build.base.env`).
+
 ## Project layout
 
 ```
