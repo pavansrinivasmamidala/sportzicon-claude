@@ -1,6 +1,7 @@
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
 
+import { readBytes } from './read-bytes';
 import { supabase } from './supabase';
 
 export interface PickedFile {
@@ -42,7 +43,8 @@ export async function pickDocument(): Promise<PickedFile | null> {
 export async function uploadFile(bucket: 'avatars' | 'media' | 'documents', userId: string, file: PickedFile) {
   const safe = file.name.replace(/[^a-zA-Z0-9._-]/g, '_').slice(-60);
   const path = `${userId}/${Date.now()}-${safe}`;
-  const body = await (await fetch(file.uri)).arrayBuffer();
+  const body = await readBytes(file.uri);
+  if (!body.byteLength) throw new Error('Could not read the selected file. Please try again.');
   const { error } = await supabase.storage.from(bucket).upload(path, body, { contentType: file.mimeType, upsert: false });
   if (error) throw new Error(error.message);
   return path;

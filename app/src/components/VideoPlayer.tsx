@@ -9,8 +9,8 @@ export function VideoPlayer({ uri, height = 220 }: { uri: string; height?: numbe
     p.loop = true;
   });
   return (
-    <View style={{ height, backgroundColor: colors.dark2 }}>
-      <VideoView player={player} style={{ flex: 1 }} contentFit="cover" nativeControls />
+    <View style={{ height, backgroundColor: colors.dark2, overflow: 'hidden' }}>
+      <VideoView player={player} style={{ width: '100%', height: '100%' }} contentFit="cover" nativeControls />
     </View>
   );
 }

@@ -39,6 +39,8 @@ export default function SignUp() {
   };
 
   const progress = step === 1 ? 1 : 2;
+  // Profile setup continues the count: details (+ academy for athletes).
+  const totalSteps = role === 'athlete' ? 4 : 3;
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.canvas }}>
@@ -55,12 +57,12 @@ export default function SignUp() {
           </Text>
           {step !== 'check-email' ? (
             <Text variant="small" color={colors.onDarkMuted} style={{ paddingRight: 12 }}>
-              Step {progress} of 3
+              Step {progress} of {totalSteps}
             </Text>
           ) : null}
         </View>
         <View style={{ flexDirection: 'row', gap: 6, paddingHorizontal: 20, paddingBottom: 14 }} accessibilityElementsHidden>
-          {[1, 2, 3].map((i) => (
+          {Array.from({ length: totalSteps }, (_, i) => i + 1).map((i) => (
             <View key={i} style={{ flex: 1, height: 4, borderRadius: 2, backgroundColor: i <= progress ? colors.brand : colors.dark3 }} />
           ))}
         </View>

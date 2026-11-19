@@ -117,7 +117,15 @@ export function useCreatePost() {
 export function useDeletePost() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (id: string) => unwrap(await supabase.from('posts').delete().eq('id', id)),
+    mutationFn: async (post: Pick<FeedPost, 'id' | 'media_url'>) => {
+      unwrap(await supabase.from('posts').delete().eq('id', post.id));
+      // Also remove the uploaded photo/video so storage doesn't fill with orphaned files.
+      const marker = '/storage/v1/object/public/media/';
+      const at = post.media_url?.indexOf(marker) ?? -1;
+      if (post.media_url && at >= 0) {
+        await supabase.storage.from('media').remove([decodeURIComponent(post.media_url.slice(at + marker.length))]);
+      }
+    },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['feed'] }),
   });
 }

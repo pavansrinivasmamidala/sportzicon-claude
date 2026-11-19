@@ -6,6 +6,7 @@ import { KeyboardAvoidingView, Platform, Pressable, ScrollView, TextInput, View 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { PerformanceRow, ScorecardCard } from '@/components/PerformanceCard';
+import { VideoPlayer } from '@/components/VideoPlayer';
 import { Avatar, Button, IconButton, Sheet, Text, TopBar } from '@/components/ui';
 import { useCreatePost } from '@/lib/api/feed';
 import { usePerformances } from '@/lib/api/people';
@@ -84,17 +85,14 @@ export default function NewPost() {
             multiline
             autoFocus={!params.kind}
             accessibilityLabel="Post text"
-            style={{ minHeight: 120, fontSize: 17, lineHeight: 24, fontFamily: fonts.body, color: colors.ink, textAlignVertical: 'top' }}
+            style={{ minHeight: 120, fontSize: 17, lineHeight: 24, fontFamily: fonts.body, color: colors.ink, textAlignVertical: 'top', outlineStyle: 'none' } as object}
           />
           {media ? (
             <View style={{ borderRadius: radius.lg, overflow: 'hidden', backgroundColor: colors.dark }}>
               {media.kind === 'image' ? (
                 <Image source={{ uri: media.uri }} style={{ height: 240 }} contentFit="cover" />
               ) : (
-                <View style={{ height: 160, alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-                  <Video size={28} color={colors.brand} />
-                  <Text color={colors.onDark}>{media.name}</Text>
-                </View>
+                <VideoPlayer uri={media.uri} height={220} />
               )}
               <IconButton icon={Trash2} label="Remove media" tone="onDark" onPress={() => setMedia(null)} style={{ position: 'absolute', top: 6, right: 6, backgroundColor: 'rgba(15,23,42,0.7)' }} />
             </View>

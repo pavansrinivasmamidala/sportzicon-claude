@@ -19,10 +19,13 @@ type Step = 'role' | 'details' | 'academy';
 
 export default function Onboarding() {
   const insets = useSafeAreaInsets();
-  const { profile, refreshProfile, signOut } = useAuth();
+  const { profile, session, refreshProfile, signOut } = useAuth();
+  // People who signed up with email already chose their role on the sign-up screen, so skip asking again.
+  const roleChosenAtSignUp = typeof session?.user.user_metadata?.role === 'string';
   const createOrg = useCreateOrganization();
 
-  const [step, setStep] = useState<Step>('role');
+  const [askRole, setAskRole] = useState(!roleChosenAtSignUp);
+  const [step, setStep] = useState<Step>(roleChosenAtSignUp ? 'details' : 'role');
   const [role, setRole] = useState<UserRole>(profile?.role ?? 'athlete');
   const [name, setName] = useState(profile?.full_name ?? '');
   const [city, setCity] = useState(profile?.city ?? '');
@@ -37,8 +40,11 @@ export default function Onboarding() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const steps: Step[] = role === 'athlete' ? ['role', 'details', 'academy'] : ['role', 'details'];
+  const steps: Step[] = [...(askRole ? (['role'] as Step[]) : []), 'details', ...(role === 'athlete' ? (['academy'] as Step[]) : [])];
   const index = steps.indexOf(step);
+  // Step numbers continue from sign-up (role + account details = 2 steps).
+  const offset = roleChosenAtSignUp && !askRole ? 2 : 0;
+  const total = steps.length + offset;
   const isOrg = isOrgRole(role);
 
   const validateDetails = () => {
@@ -118,12 +124,12 @@ export default function Onboarding() {
             Set up your profile
           </Text>
           <Text variant="small" color={colors.onDarkMuted} style={{ paddingRight: 12 }}>
-            Step {index + 1} of {steps.length}
+            Step {offset + index + 1} of {total}
           </Text>
         </View>
         <View style={{ flexDirection: 'row', gap: 6, paddingHorizontal: 20, paddingBottom: 14 }}>
-          {steps.map((s, i) => (
-            <View key={s} style={{ flex: 1, height: 4, borderRadius: 2, backgroundColor: i <= index ? colors.brand : colors.dark3 }} />
+          {Array.from({ length: total }).map((_, i) => (
+            <View key={i} style={{ flex: 1, height: 4, borderRadius: 2, backgroundColor: i <= offset + index ? colors.brand : colors.dark3 }} />
           ))}
         </View>
       </View>
@@ -146,6 +152,21 @@ export default function Onboarding() {
               <Text color={colors.inkSecondary}>
                 {role === 'athlete' ? 'Scouts and academies search by these details.' : 'This appears on your profile.'}
               </Text>
+              {!askRole ? (
+                <Text variant="small" color={colors.inkMuted}>
+                  Signing up as {roleLabels[role]}.{' '}
+                  <Text
+                    variant="smallStrong"
+                    color={colors.accent}
+                    accessibilityRole="button"
+                    onPress={() => {
+                      setAskRole(true);
+                      setStep('role');
+                    }}>
+                    Change
+                  </Text>
+                </Text>
+              ) : null}
             </View>
             <Field label="Full name" value={name} onChangeText={setName} autoComplete="name" />
             {isOrg ? (

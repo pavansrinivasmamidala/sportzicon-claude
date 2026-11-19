@@ -43,7 +43,7 @@ export const PostCard = memo(function PostCard({ post, standalone }: { post: Fee
 
   const remove = async () => {
     if (!(await confirm({ title: 'Delete this post?', message: 'This can’t be undone.', confirmLabel: 'Delete', destructive: true }))) return;
-    del.mutate(post.id);
+    del.mutate(post);
     if (standalone) router.back();
   };
 
