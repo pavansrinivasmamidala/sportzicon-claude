@@ -25,7 +25,10 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "output": "single",
@@ -48,7 +51,8 @@
         "expo-image-picker",
         {
           "photosPermission": "Sportzicon uses your photo library so you can share match photos and reels and set a profile picture.",
-          "cameraPermission": "Sportzicon uses the camera so you can capture match photos and reels."
+          "cameraPermission": "Sportzicon uses the camera so you can capture match photos and reels.",
+          "microphonePermission": false
         }
       ],
       "expo-web-browser"
@@ -56,6 +60,17 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "1c918fc5-5e5f-4c5f-a7bc-2f43a8952c55"
+      }
+    },
+    "owner": "pavansrinivass-team"
   }
 }
